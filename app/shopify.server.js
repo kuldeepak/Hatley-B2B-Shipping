@@ -51,6 +51,42 @@ const shopify = shopifyApp({
 });
 
 
+// -----------------------------
+// Shopify GraphQL helper
+// -----------------------------
+export async function shopifyGraphQL({ shop, query, variables }) {
+  const TOKEN = process.env.SHOPIFY_ADMIN_TOKEN;
+  const API_VERSION = "2026-04";
+
+  console.log("➡️ Shopify GraphQL Request:", { shop, variables });
+
+  const res = await fetch(`https://${shop}/admin/api/${API_VERSION}/graphql.json`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Shopify-Access-Token": TOKEN,
+    },
+    body: JSON.stringify({ query, variables }),
+  });
+
+  const text = await res.text();
+
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (e) {
+    console.error("❌ Invalid JSON from Shopify:", text);
+    throw new Error("Invalid Shopify response");
+  }
+
+  if (!res.ok || data.errors) {
+    console.error("❌ Shopify GraphQL Error:", { status: res.status, data });
+  }
+
+  return data;
+}
+
+
 export default shopify;
 export const apiVersion = ApiVersion.October25;
 export const addDocumentResponseHeaders = shopify.addDocumentResponseHeaders;
@@ -59,4 +95,7 @@ export const unauthenticated = shopify.unauthenticated;
 export const login = shopify.login;
 export const registerWebhooks = shopify.registerWebhooks;
 export const sessionStorage = shopify.sessionStorage;
+
+
+
 

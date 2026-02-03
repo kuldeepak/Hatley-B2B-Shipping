@@ -1,22 +1,27 @@
-import { authenticate } from "../shopify.server";
-import db from "../db.server";
+import { json } from "@remix-run/node";
 
-export const action = async ({ request }) => {
-  const { payload, session, topic, shop } = await authenticate.webhook(request);
+async function shopifyGraphQL({ shop, query, variables }) {
+  const TOKEN = process.env.SHOPIFY_ADMIN_TOKEN;
+  const API_VERSION = "2026-04";
+  const url = `https://${shop}/admin/api/${API_VERSION}/graphql.json`;
 
-  console.log(`Received ${topic} webhook for ${shop}`);
-  const current = payload.current;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Shopify-Access-Token": TOKEN,
+    },
+    body: JSON.stringify({ query, variables }),
+  });
 
-  if (session) {
-    await db.session.update({
-      where: {
-        id: session.id,
-      },
-      data: {
-        scope: current.toString(),
-      },
-    });
-  }
+  const data = await res.json();
+  return data;
+}
 
-  return new Response();
-};
+// POST action for your fetch
+export async function action({ request }) {
+  const { query, variables } = await request.json();
+  const shop = process.env.SHOPIFY_ADMIN_TOKEN;
+  const response = await shopifyGraphQL({ shop, query, variables });
+  return json(response);
+}

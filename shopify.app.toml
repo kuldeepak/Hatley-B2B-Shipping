@@ -2,7 +2,7 @@
 
 client_id = "4b06c909488528dc7a8d9f1b83c055ae"
 name = "hatley-b2b"
-application_url = "https://zealand-reads-nelson-nevada.trycloudflare.com"
+application_url = "https://liz-instruction-covers-guidance.trycloudflare.com"
 embedded = true
 
 [build]
@@ -24,15 +24,21 @@ uri = "/webhooks/app/uninstalled"
 topics = ["orders/create"]
 uri = "/webhooks/orders/create"
 
+[app_proxy]
+url = "https://liz-instruction-covers-guidance.trycloudflare.com/proxy"
+prefix = "apps"          
+subpath = "proxy" 
+
+
 [access_scopes]
-scopes = "read_fulfillments,write_fulfillments,write_fulfillment_constraint_rules,read_products,write_products,read_orders,write_orders,read_locations,read_companies,write_companies,write_customers,read_customers,read_inventory,customer_read_companies,customer_write_companies,customer_read_locations,customer_write_locations"
+scopes = "read_fulfillments,write_fulfillments,write_fulfillment_constraint_rules,read_products,write_products,read_orders,write_orders,read_locations,read_companies,write_companies,write_customers,read_customers,read_inventory,customer_read_companies,customer_write_companies,customer_read_locations,customer_write_locations , write_app_proxy"
 
 
 use_legacy_install_flow = false
 
 [auth]
 redirect_urls = [
-  "https://zealand-reads-nelson-nevada.trycloudflare.com/auth/callback",
-  "https://zealand-reads-nelson-nevada.trycloudflare.com/auth/shopify/callback",
-  "https://zealand-reads-nelson-nevada.trycloudflare.com/api/auth/callback"
+  "https://liz-instruction-covers-guidance.trycloudflare.com/auth/callback",
+  "https://liz-instruction-covers-guidance.trycloudflare.com/auth/shopify/callback",
+  "https://liz-instruction-covers-guidance.trycloudflare.com/api/auth/callback"
 ]
